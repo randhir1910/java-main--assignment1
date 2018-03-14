@@ -78,7 +78,7 @@ public class TwitterOperation {
     /**
      * @return higher to lower reTweets count.
      */
-    public CompletableFuture<List<Status>> higherToLowerReTweetsCount() {
+    public CompletableFuture<List<String>> higherToLowerReTweetsCount() {
         return CompletableFuture.supplyAsync(() -> {
             List<Status> higherToLowTweets = Collections.emptyList();
             try {
@@ -90,13 +90,16 @@ public class TwitterOperation {
             }
 
             return higherToLowTweets;
-        });
+        }).thenApply(tweets ->
+                tweets.stream()
+                        .map(tweet -> tweet.getRetweetCount() + " " + tweet.getText())
+                        .collect(Collectors.toList()));
     }
 
     /**
      * @return higher to lower likes count.
      */
-    public CompletableFuture<List<Status>> higherToLowerLikesCount() {
+    public CompletableFuture<List<String>> higherToLowerLikesCount() {
         return CompletableFuture.supplyAsync(() -> {
             List<Status> higherToLowTweets = Collections.emptyList();
             try {
@@ -108,7 +111,10 @@ public class TwitterOperation {
                 twitterException.printStackTrace();
             }
             return higherToLowTweets;
-        });
+        }).thenApply(tweets ->
+                tweets.stream()
+                        .map(tweet -> tweet.getFavoriteCount() + " " + tweet.getText())
+                        .collect(Collectors.toList()));
     }
 
     /**
